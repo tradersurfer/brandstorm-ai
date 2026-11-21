@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrandStorm AI — Clearance Dashboard</title>
+<script>
+  /* Theme before first paint: Light / Dark / System, LIGHT default.
+     Choice persists in localStorage under 'brandstorm-theme'. */
+  (function () {
+    try {
+      var choice = localStorage.getItem('brandstorm-theme') || 'light';
+      if (choice !== 'light' && choice !== 'dark' && choice !== 'system') choice = 'light';
+      var effective = choice === 'system'
+        ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : choice;
+      document.documentElement.setAttribute('data-theme', effective);
+      document.documentElement.setAttribute('data-theme-choice', choice);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.setAttribute('data-theme-choice', 'light');
+    }
+  })();
+</script>
+<style>
+  /* Theme variables. Dark is the original v0.2 palette, unchanged.
+     Light is white / very-light-gray with dark text, same gold accent. */
+  :root, [data-theme="light"] {
+    --bg: #f7f7f8; --text: #1a1a1e; --muted: #5f5f6b;
+    --panel: #ffffff; --panel-2: #f0f0f2; --border: #e0e0e5; --border-soft: #ececf0;
+    --input-bg: #ffffff; --input-border: #d4d4da; --input-text: #1a1a1e;
+    --btn-bg: #ffffff; --btn-text: #33333a;
+    --chip-bg: #ececf0; --chip-text: #33333a;
+    --ok-bg: #dcfce7; --ok-text: #166534;
+    --bad-bg: #fee2e2; --bad-text: #991b1b;
+    --warn-bg: #fef3c7; --warn-text: #92400e;
+    --mut-bg: #ececf0; --mut-text: #5f5f6b;
+    --reason: #44444e; --detail-bg: #f0f0f2;
+    --accent: #f5c518; --accent-text: #111;
+  }
+  [data-theme="dark"] {
+    --bg: #0e0e11; --text: #f2f2f2; --muted: #9a9aa3;
+    --panel: #16161a; --panel-2: #1c1c21; --border: #2a2a30; --border-soft: #1e1e23;
+    --input-bg: #1c1c21; --input-border: #33333a; --input-text: #f2f2f2;
+    --btn-bg: #1c1c21; --btn-text: #ddd;
+    --chip-bg: #26262b; --chip-text: #ddd;
+    --ok-bg: #14532d; --ok-text: #4ade80;
+    --bad-bg: #450a0a; --bad-text: #f87171;
+    --warn-bg: #451a03; --warn-text: #fbbf24;
+    --mut-bg: #26262b; --mut-text: #9a9aa3;
+    --reason: #c9c9d1; --detail-bg: #131316;
+    --accent: #f5c518; --accent-text: #111;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.55; padding: 26px; }
+  .headrow { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  h1 { font-size: 30px; letter-spacing: -0.5px; }
+  h1 span { color: var(--accent); }
+  .theme-toggle { display: flex; gap: 6px; align-items: center; padding-top: 6px; }
+  .theme-toggle span { font-size: 13px; color: var(--muted); margin-right: 2px; }
+  .theme-toggle button { background: var(--btn-bg); color: var(--btn-text); border: 1px solid var(--input-border); border-radius: 8px; padding: 7px 13px; font-size: 13px; cursor: pointer; }
+  .theme-toggle button.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
+  .sub { color: var(--muted); font-size: 14px; margin: 6px 0 20px; line-height: 1.6; }
+  .cards { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; min-width: 140px; }
+  .stat .num { font-size: 34px; font-weight: 800; line-height: 1.1; }
+  .stat .lbl { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .stat.green .num { color: #22c55e; } .stat.yellow .num { color: #f59e0b; } .stat.red .num { color: #ef4444; }
+  [data-theme="light"] .stat.green .num { color: #15803d; }
+  [data-theme="light"] .stat.yellow .num { color: #b45309; }
+  [data-theme="light"] .stat.red .num { color: #dc2626; }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .toolbar button { background: var(--btn-bg); color: var(--btn-text); border: 1px solid var(--input-border); border-radius: 8px; padding: 10px 16px; font-size: 14px; cursor: pointer; }
+  .toolbar button.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
+  .toolbar input { background: var(--input-bg); color: var(--input-text); border: 1px solid var(--input-border); border-radius: 8px; padding: 10px 14px; font-size: 14px; flex: 1; min-width: 180px; }
+  .notes { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; font-size: 14px; color: var(--reason); line-height: 1.7; margin-bottom: 18px; }
+  .notes b { color: var(--text); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th { text-align: left; padding: 12px 10px; color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  td { padding: 14px 10px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tr.detail td { background: var(--detail-bg); font-size: 13.5px; color: var(--reason); line-height: 1.7; padding: 18px 14px; }
+  .name { font-weight: 700; cursor: pointer; font-size: 15px; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .badge.clean { background: var(--ok-bg); color: var(--ok-text); }
+  .badge.partial { background: var(--warn-bg); color: var(--warn-text); }
+  .badge.conflict { background: var(--bad-bg); color: var(--bad-text); }
+  .chip { display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: 12.5px; margin: 2px 3px 2px 0; background: var(--chip-bg); color: var(--chip-text); line-height: 1.5; }
+  .chip.ok { background: var(--ok-bg); color: var(--ok-text); }
+  .chip.bad { background: var(--bad-bg); color: var(--bad-text); }
+  .chip.warn { background: var(--warn-bg); color: var(--warn-text); }
+  .chip.mut { background: var(--mut-bg); color: var(--mut-text); }
+  .reason { color: var(--reason); line-height: 1.55; }
+  #loading { color: var(--muted); padding: 30px 0; }
+  a { color: #b8860b; }
+  [data-theme="dark"] a { color: var(--accent); }
+  .runform { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+  .runform h2 { font-size: 17px; margin-bottom: 12px; }
+  .runform .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .runform label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+  .runform input { width: 100%; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--input-border); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+  .runform button { background: var(--accent); color: var(--accent-text); border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 14px; }
+  .runform button:disabled { opacity: 0.5; cursor: wait; }
+  #runStatus { font-size: 13.5px; color: var(--reason); margin-top: 12px; line-height: 1.6; }
+  .sampletag { display: inline-block; background: var(--chip-bg); color: #b8860b; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-left: 6px; }
+  [data-theme="dark"] .sampletag { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="headrow">
+  <h1>BrandStorm <span>AI</span> — Clearance Dashboard</h1>
+  <div class="theme-toggle" id="themeToggle" role="group" aria-label="Theme">
+    <span>Theme</span>
+    <button type="button" data-theme-choice="light">Light</button>
+    <button type="button" data-theme-choice="dark">Dark</button>
+    <button type="button" data-theme-choice="system">System</button>
+  </div>
+</div>
+<p class="sub" id="briefLine">Loading run…</p>
+
+<div class="cards" id="stats"></div>
+<div class="notes" id="tierNotes"></div>
+
+<div class="runform" id="runForm">
+  <h2>Run a new brief</h2>
+  <div class="grid">
+    <div><label>Industry</label><input id="fIndustry" type="text" placeholder="e.g. Specialty Coffee Roastery"></div>
+    <div><label>Geographic scope (free text)</label><input id="fGeo" type="text" placeholder="e.g. Phoenix, Arizona / US National"></div>
+    <div><label>States for Tier 3 (comma-separated codes)</label><input id="fStates" type="text" placeholder="e.g. AZ, CA — leave blank to skip state filings"></div>
+    <div><label>Nice Class</label><input id="fClass" type="text" placeholder="e.g. 030" value="030"></div>
+    <div><label>Batch size</label><input id="fBatch" type="number" min="5" max="100" value="50"></div>
+    <div><label>Brand aesthetic (comma-separated)</label><input id="fAesthetic" type="text" placeholder="e.g. Rustic, Artisan, Modern"></div>
+    <div><label>Must-include variations (comma-separated)</label><input id="fAnchors" type="text" placeholder="e.g. Desert Roast, Sonora Roast"></div>
+  </div>
+  <button id="runBtn" type="button">Run clearance</button>
+  <div id="runStatus">Tier 3 checks only the states you list (or a region in the scope). Leave states blank and no state filings are checked.</div>
+</div>
+
+<div class="toolbar">
+  <button data-f="all" class="active">All</button>
+  <button data-f="clean">🟢 Clean</button>
+  <button data-f="partial">🟡 Partial</button>
+  <button data-f="conflict">🔴 Conflict</button>
+  <input id="q" type="text" placeholder="Search names…">
+</div>
+
+<table>
+  <thead><tr><th>Name</th><th>Badge</th><th>.com</th><th>USPTO (Class)</th><th>Social</th><th>State</th><th>Why</th></tr></thead>
+  <tbody id="rows"><tr><td colspan="7" id="loading">Loading results… run <code>python3 -m scripts.run_brief briefs/sample-arizona-coffee.json</code> first if nothing appears.</td></tr></tbody>
+</table>
+
+<script>
+let DATA = null;
+let filter = 'all';
+
+/* Theme toggle: Light / Dark / System, LIGHT default, persisted in
+   localStorage, applied before first paint by the <head> script. */
+function applyTheme(choice) {
+  const effective = choice === 'system'
+    ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    : choice;
+  document.documentElement.setAttribute('data-theme', effective);
+  document.documentElement.setAttribute('data-theme-choice', choice);
+  try { localStorage.setItem('brandstorm-theme', choice); } catch (e) { /* private mode */ }
+  document.querySelectorAll('#themeToggle button').forEach(b =>
+    b.classList.toggle('active', b.dataset.themeChoice === choice));
+}
+document.querySelectorAll('#themeToggle button').forEach(btn => {
+  btn.addEventListener('click', () => applyTheme(btn.dataset.themeChoice));
+});
+applyTheme(document.documentElement.getAttribute('data-theme-choice') || 'light');
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if ((document.documentElement.getAttribute('data-theme-choice') || 'light') === 'system') applyTheme('system');
+  });
+}
+
+function chip(text, cls) { return '<span class="chip ' + cls + '">' + text + '</span>'; }
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function tierChips(r) {
+  const d = r.domain || {};
+  const com = (d.tlds || {}).com;
+  const comChip = com === 'available' ? chip('.com ✓ free', 'ok') : com === 'taken' ? chip('.com ✗ taken', 'bad') : chip('.com ?', 'warn');
+  const u = r.uspto || {};
+  let uChip = chip('USPTO ?', 'warn');
+  if (u.status === 'ok') {
+    if (!u.matches || !u.matches.length) uChip = chip('USPTO ✓ clear', 'ok');
+    else if (u.exact_live) uChip = chip('USPTO ✗ exact live', 'bad');
+    else uChip = chip('USPTO ~ similar live', 'warn');
+  }
+  const s = r.social || {};
+  const plats = s.platforms || {};
+  const live = s.live_platforms || ['X', 'YouTube'];
+  const taken = Object.entries(plats).flatMap(([p, hs]) => Object.entries(hs || {}).filter(([, v]) => v === 'taken').map(([h]) => '@' + h + ' ' + p));
+  const sChip = taken.length ? chip('✗ ' + esc(taken.join(', ')), 'bad') : chip('✓ free on ' + esc(live.join(', ')), 'ok');
+  const st = r.state || {};
+  let stChip;
+  if (st.status === 'not_requested') stChip = chip('State: not requested', 'mut');
+  else {
+    const codes = Object.keys(st.states || {}).join(', ');
+    stChip = chip('State: manual check' + (codes ? ' (' + codes + ')' : ''), 'mut');
+  }
+  return { comChip, uChip, sChip, stChip };
+}
+
+function detailHtml(r) {
+  const d = r.domain || {};
+  const tlds = Object.entries(d.tlds || {}).map(([t, s]) =>
+    chip('.' + t + ': ' + s, s === 'available' ? 'ok' : s === 'taken' ? 'bad' : 'warn')).join(' ');
+  const dMethod = '<b>Domain method:</b> ' + esc(d.method || 'doh') +
+    (d.method_detail ? ' — ' + esc(d.method_detail) : '') +
+    (d.error ? ' <span style="color:#dc2626">(' + esc(d.error) + ')</span>' : '');
+  const u = r.uspto || {};
+  const uMethod = '<b>USPTO method:</b> ' + esc(u.method || 'companion') +
+    (u.method_detail ? ' — ' + esc(u.method_detail) : '') +
+    (u.error ? ' <span style="color:#dc2626">(' + esc(u.error) + ')</span>' : '');
+  const matches = (u.matches || []).map(m =>
+    esc(m.wordmark) + ' — ' + esc(m.kind) + ', ' + esc(m.status || '') + ' (serial ' + esc(m.serial || '?') + ')' +
+    (m.tsdr_verified ? ' [TSDR verified' + (m.tsdr_status ? ': ' + esc(m.tsdr_status) : '') + ']' : '')).join('<br>') || 'No live matches in class.';
+  const s = r.social || {};
+  const socialLines = Object.entries(s.platforms || {}).map(([p, handles]) =>
+    esc(p) + ': ' + Object.entries(handles).map(([h, v]) => '@' + esc(h) + ' → ' + esc(v)).join(', ')).join('<br>');
+  const dn = s.display_name || {};
+  const dnLines = Object.entries(dn.platforms || {}).map(([p, v]) =>
+    esc(p) + ': ' + esc(v.status) + ' — ' + esc(v.reason || '')).join('<br>');
+  const st = r.state || {};
+  let stateHtml;
+  if (st.status === 'not_requested') {
+    stateHtml = 'Not requested — ' + esc(st.guidance || '');
+  } else {
+    stateHtml = Object.entries(st.states || {}).map(([k, v]) =>
+      '<a href="' + esc(v.url) + '" target="_blank">' + esc(k) + ' — ' + esc(v.portal || v.name) + '</a>' +
+      (v.verified ? ' (link verified)' : ' (link not re-verified this build)') +
+      (v.note ? ' — ' + esc(v.note) : '')).join('<br>');
+  }
+  return '<b>Domains:</b> ' + tlds + '<br>' + dMethod +
+    '<br><b>USPTO (Class ' + esc(u.nice_class || '') + '):</b><br>' + matches + '<br>' + uMethod +
+    '<br><b>Social — usernames (per platform × handle):</b><br>' + socialLines +
+    '<br><b>Social — display name "' + esc(dn.name || '') + '" (informational only, never affects the badge):</b><br>' + (dnLines || 'n/a') +
+    '<br><b>State registries (manual — never blocks green):</b><br>' + stateHtml;
+}
+
+function render() {
+  if (!DATA) return;
+  const b = DATA.brief || {};
+  const label = b.label ? ' <span class="sampletag">' + esc(b.label) + '</span>' : '';
+  const geo = DATA.geography || {};
+  const statesTxt = (geo.states && geo.states.length) ? ' · States: ' + esc(geo.states.join(', ')) : ' · States: none requested';
+  document.getElementById('briefLine').innerHTML =
+    esc(b.industry || '') + ' · ' + esc(b.geographic_scope || '') + ' · Class ' + esc(b.nice_class || '') +
+    ' · ' + (DATA.results ? DATA.results.length : 0) + ' candidates · run ' + esc((DATA.generated_at || '').slice(0, 10)) +
+    (DATA.duration_seconds ? ' · ' + DATA.duration_seconds + 's' : '') + statesTxt + label;
+  const s = DATA.summary || {};
+  document.getElementById('stats').innerHTML =
+    '<div class="stat"><div class="num">' + (s.total || 0) + '</div><div class="lbl">Total</div></div>' +
+    '<div class="stat green"><div class="num">' + (s.clean || 0) + '</div><div class="lbl">🟢 Clean</div></div>' +
+    '<div class="stat yellow"><div class="num">' + (s.partial || 0) + '</div><div class="lbl">🟡 Partial</div></div>' +
+    '<div class="stat red"><div class="num">' + (s.conflict || 0) + '</div><div class="lbl">🔴 Conflict</div></div>' +
+    '<div class="stat"><div class="num">' + (s.com_available || 0) + '</div><div class="lbl">.com free</div></div>';
+  const tn = DATA.tier_notes || {};
+  const ks = DATA.keys_status || {};
+  const keysLine = Object.keys(ks).length
+    ? '<br>· <b>Keys:</b> domain ' + esc(ks.domain || 'keyless') + ' · USPTO ' + esc(ks.uspto || 'keyless') +
+      ' · LLM ' + esc(ks.llm || 'keyless') + ' — keys are optional upgrades; see docs/KEY_SETUP.md.'
+    : '';
+  document.getElementById('tierNotes').innerHTML =
+    '<b>What each tier actually did:</b><br>' +
+    '· <b>Domain:</b> ' + esc(tn.domain || '') + '<br>' +
+    '· <b>USPTO:</b> ' + esc(tn.uspto || '') + '<br>' +
+    '· <b>State:</b> ' + esc(tn.state || '') + '<br>' +
+    '· <b>Social:</b> ' + esc(tn.social || '') + keysLine;
+  const q = (document.getElementById('q').value || '').toLowerCase();
+  const rows = DATA.results.filter(r =>
+    (filter === 'all' || r.badge === filter) &&
+    (!q || r.name.toLowerCase().includes(q)));
+  const tb = document.getElementById('rows');
+  tb.innerHTML = '';
+  rows.forEach(r => {
+    const c = tierChips(r);
+    const tr = document.createElement('tr');
+    const badgeCls = r.badge === 'clean' ? 'clean' : r.badge === 'conflict' ? 'conflict' : 'partial';
+    const badgeTxt = r.badge === 'clean' ? '🟢 Clean' : r.badge === 'conflict' ? '🔴 Conflict' : '🟡 Partial';
+    tr.innerHTML = '<td class="name">' + esc(r.name) + '</td><td><span class="badge ' + badgeCls + '">' + badgeTxt + '</span></td>' +
+      '<td>' + c.comChip + '</td><td>' + c.uChip + '</td><td>' + c.sChip + '</td><td>' + c.stChip + '</td>' +
+      '<td class="reason">' + esc(r.reason || '') + '</td>';
+    tr.querySelector('.name').addEventListener('click', () => {
+      const next = tr.nextSibling;
+      if (next && next.classList && next.classList.contains('detail')) { next.remove(); return; }
+      const dtr = document.createElement('tr');
+      dtr.className = 'detail';
+      dtr.innerHTML = '<td colspan="7">' + detailHtml(r) + '</td>';
+      tr.after(dtr);
+    });
+    tb.appendChild(tr);
+  });
+  if (!rows.length) tb.innerHTML = '<tr><td colspan="7" style="color:#777">No names match this filter.</td></tr>';
+}
+
+document.getElementById('runBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('runBtn');
+  const statusEl = document.getElementById('runStatus');
+  const splitList = v => (v || '').split(',').map(s => s.trim()).filter(Boolean);
+  const brief = {
+    industry: document.getElementById('fIndustry').value.trim() || 'Untitled brief',
+    geographic_scope: document.getElementById('fGeo').value.trim(),
+    states: splitList(document.getElementById('fStates').value).map(s => s.toUpperCase()),
+    nice_class: document.getElementById('fClass').value.trim() || '025',
+    candidate_batch_size: parseInt(document.getElementById('fBatch').value, 10) || 50,
+    brand_aesthetic: splitList(document.getElementById('fAesthetic').value),
+    direct_anchor_rules: {
+      must_include_exact_variations: splitList(document.getElementById('fAnchors').value),
+      enforce_compound_structure: true,
+    },
+    tlds: ['com', 'co', 'studio', 'supply', 'app'],
+  };
+  btn.disabled = true;
+  statusEl.textContent = 'Running clearance — live DNS + USPTO + social checks take a few minutes…';
+  try {
+    const res = await fetch('/api/run', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brief, limit: brief.candidate_batch_size }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+    const s = data.summary || {};
+    statusEl.textContent = 'Done: ' + s.total + ' total · 🟢 ' + s.clean + ' clean · 🟡 ' + s.partial + ' partial · 🔴 ' + s.conflict +
+      ' conflict · States checked: ' + ((data.geography && data.geography.states && data.geography.states.join(', ')) || 'none requested') + '.';
+    const fresh = await fetch('/api/results').then(r => r.json());
+    DATA = fresh; render();
+  } catch (e) {
+    statusEl.textContent = 'Run failed: ' + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.querySelectorAll('.toolbar button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toolbar button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filter = btn.dataset.f;
+    render();
+  });
+});
+document.getElementById('q').addEventListener('input', render);
+
+fetch('/api/results').then(r => r.json()).then(d => { DATA = d; render(); })
+  .catch(() => fetch('/data/results.json').then(r => r.json()).then(d => { DATA = d; render(); })
+  .catch(() => { document.getElementById('loading').textContent = 'No results yet — run: python3 -m scripts.run_brief briefs/sample-arizona-coffee.json'; }));
+</script>
+</body>
+</html>

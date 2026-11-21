@@ -1,0 +1,20 @@
+name: brandstorm
+version: 0.3.0
+description: "BrandStorm AI — name generation plus a real-time 4-tier clearance pipeline (domain, USPTO trademark, state business registries, social handles) for any industry, region, and Nice Class. The installer supplies their own brief; nothing about any one person, business, or place is baked in. Local prototype: keyless checks by default, optional keys only from the installer's own Hermes secret scope."
+author: tradersurfer93
+license: MIT
+requires_hermes: ">=0.21.6"
+provides_tools:
+  - brandstorm_brief
+  - brandstorm_run
+  - brandstorm_results
+  - brandstorm_state_links
+config_schema:
+  industry: {type: str, default: "", label: "Industry", description: "Your industry, e.g. Specialty Tea House. Entered on install; nothing is pre-filled."}
+  region: {type: str, default: "", label: "Region", description: "Where the brand operates, e.g. Portland, Oregon / US National. Free text; used only to resolve Tier 3 states."}
+  states: {type: str, default: "", label: "States", description: "Comma-separated US state/DC codes for Tier 3 state-registry checks, e.g. OR,WA. Empty means no state checks."}
+  class: {type: str, default: "", label: "Nice Class", description: "Trademark Nice Class as a string, e.g. 030 for tea/coffee, 025 for apparel. Empty defaults to 025 at run time."}
+  godaddy_key: {type: secret, env: BRANDSTORM_GODADDY_KEY, label: "GoDaddy API key", description: "Optional. Authoritative domain availability (Tier 1). Without it, Tier 1 runs keyless via DNS-over-HTTPS. Stored in the Hermes secret scope / env, never logged, never committed."}
+  godaddy_secret: {type: secret, env: BRANDSTORM_GODADDY_SECRET, label: "GoDaddy API secret", description: "Optional. Paired with godaddy_key. Stored in the Hermes secret scope / env, never logged, never committed."}
+  uspto_key: {type: secret, env: BRANDSTORM_USPTO_KEY, label: "USPTO API key", description: "Optional. Official USPTO TSDR access (Tier 2). Without it, Tier 2 uses the keyless tmsearch companion API. Stored in the Hermes secret scope / env, never logged, never committed."}
+  llm_key: {type: secret, env: BRANDSTORM_LLM_KEY, label: "LLM API key", description: "Optional. Reserved for a future model-based name generator. v0.3 generation is combinatorial from word banks and needs no key. Stored in the Hermes secret scope / env, never logged, never committed."}

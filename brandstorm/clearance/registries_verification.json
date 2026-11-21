@@ -1,0 +1,462 @@
+{
+  "AK": {
+    "checked_at": "2026-11-13T03:08:08.061705+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.commerce.alaska.gov/web/cbp/",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:08.061705+00:00",
+    "verified": true
+  },
+  "AL": {
+    "checked_at": "2026-11-13T03:08:09.171199+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.sos.alabama.gov/business-entities",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:09.171199+00:00",
+    "verified": true
+  },
+  "AR": {
+    "checked_at": "2026-11-13T03:08:08.620909+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://sos-corp-search.ark.org/corps",
+    "http_status": 405,
+    "last_verified_at": "2026-11-13T03:08:08.620909+00:00",
+    "verified": true
+  },
+  "AZ": {
+    "checked_at": "2026-11-13T03:08:27.326472+00:00",
+    "error": "TimeoutError: The read operation timed out",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "CA": {
+    "checked_at": "2026-11-13T03:08:07.891009+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": null,
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:07.891009+00:00",
+    "verified": true
+  },
+  "CO": {
+    "checked_at": "2026-11-13T03:08:07.522992+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "CT": {
+    "checked_at": "2026-11-13T03:08:09.571648+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://portal.ct.gov/sots",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:09.571648+00:00",
+    "verified": true
+  },
+  "DC": {
+    "checked_at": "2026-11-13T03:08:08.728703+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://boss.dc.gov/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:08.728703+00:00",
+    "verified": true
+  },
+  "DE": {
+    "checked_at": "2026-11-13T03:08:08.538234+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://icis.corp.delaware.gov/ecorp/entitysearch/NameSearch.aspx",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:08.538234+00:00",
+    "verified": true
+  },
+  "FL": {
+    "checked_at": "2026-11-13T03:08:07.870617+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": null,
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:07.870617+00:00",
+    "verified": true
+  },
+  "GA": {
+    "checked_at": "2026-11-13T03:08:08.480432+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": null,
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:08.480432+00:00",
+    "verified": true
+  },
+  "HI": {
+    "checked_at": "2026-11-13T03:08:09.437936+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://hbe.ehawaii.gov/documents/search.html",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:09.437936+00:00",
+    "verified": true
+  },
+  "IA": {
+    "checked_at": "2026-11-13T03:08:09.186787+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://sos.iowa.gov/search/business",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:09.186787+00:00",
+    "verified": true
+  },
+  "ID": {
+    "checked_at": "2026-11-13T03:08:08.731123+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://sosbiz.idaho.gov/search/business",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:08.731123+00:00",
+    "verified": true
+  },
+  "IL": {
+    "checked_at": "2026-11-13T03:08:28.341893+00:00",
+    "error": "TimeoutError: The read operation timed out",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "IN": {
+    "checked_at": "2026-11-13T03:08:09.182411+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://bsd.sos.in.gov/publicbusinesssearch",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:09.182411+00:00",
+    "verified": true
+  },
+  "KS": {
+    "checked_at": "2026-11-13T03:08:11.971412+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://sos.ks.gov/businesses/businesses.html",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:11.971412+00:00",
+    "verified": true
+  },
+  "KY": {
+    "checked_at": "2026-11-13T03:08:13.015656+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.sos.ky.gov/Pages/default.aspx",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:13.015656+00:00",
+    "verified": true
+  },
+  "LA": {
+    "checked_at": "2026-11-13T03:08:14.264099+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://coraweb.sos.la.gov/commercialsearch/commercialsearch.aspx",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:14.264099+00:00",
+    "verified": true
+  },
+  "MA": {
+    "checked_at": "2026-11-13T03:08:10.045383+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://corp.sec.state.ma.us/corpweb/CorpSearch/CorpSearch.aspx",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:10.045383+00:00",
+    "verified": true
+  },
+  "MD": {
+    "checked_at": "2026-11-13T03:08:10.732629+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://egov.maryland.gov/BusinessExpress/EntitySearch",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:10.732629+00:00",
+    "verified": true
+  },
+  "ME": {
+    "checked_at": "2026-11-13T03:08:09.951666+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "MI": {
+    "checked_at": "2026-11-13T03:08:09.896701+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "MN": {
+    "checked_at": "2026-11-13T03:08:39.893939+00:00",
+    "error": "TimeoutError: The read operation timed out",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "MO": {
+    "checked_at": "2026-11-13T03:08:10.510634+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": null,
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:10.510634+00:00",
+    "verified": true
+  },
+  "MS": {
+    "checked_at": "2026-11-13T03:08:10.500320+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": null,
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:10.500320+00:00",
+    "verified": true
+  },
+  "MT": {
+    "checked_at": "2026-11-13T03:08:10.783507+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://biz.sosmt.gov/search",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:10.783507+00:00",
+    "verified": true
+  },
+  "NC": {
+    "checked_at": "2026-11-13T03:08:13.474235+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.sosnc.gov/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:13.474235+00:00",
+    "verified": true
+  },
+  "ND": {
+    "checked_at": "2026-11-13T03:08:13.320210+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://firststop.sos.nd.gov/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:13.320210+00:00",
+    "verified": true
+  },
+  "NE": {
+    "checked_at": "2026-11-13T03:08:12.968952+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.nebraska.gov/sos/corp/corpsearch.cgi",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:12.968952+00:00",
+    "verified": true
+  },
+  "NH": {
+    "checked_at": "2026-11-13T03:08:11.795220+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://quickstart.sos.nh.gov/online/BusinessInquiry",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:11.795220+00:00",
+    "verified": true
+  },
+  "NJ": {
+    "checked_at": "2026-11-13T03:08:12.104496+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.njportal.com/DOR/BusinessNameSearch/Search/BusinessName",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:12.104496+00:00",
+    "verified": true
+  },
+  "NM": {
+    "checked_at": "2026-11-13T03:08:12.284691+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "NV": {
+    "checked_at": "2026-11-13T03:08:12.570321+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": true,
+    "final_url": "https://orion.nv.gov/portal/public/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:12.570321+00:00",
+    "verified": true
+  },
+  "NY": {
+    "checked_at": "2026-11-13T03:08:32.177184+00:00",
+    "error": "TimeoutError: The read operation timed out",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "OH": {
+    "checked_at": "2026-11-13T03:08:13.613247+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://businesssearch.ohiosos.gov/",
+    "http_status": 403,
+    "last_verified_at": "2026-11-13T03:08:13.613247+00:00",
+    "verified": true
+  },
+  "OK": {
+    "checked_at": "2026-11-13T03:08:15.000658+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://oklahoma.gov/sos.html",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:15.000658+00:00",
+    "verified": true
+  },
+  "OR": {
+    "checked_at": "2026-11-13T03:08:14.759408+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://egov.sos.state.or.us/br/pkg_web_name_srch_inq.login",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:14.759408+00:00",
+    "verified": true
+  },
+  "PA": {
+    "checked_at": "2026-11-13T03:08:13.988490+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://file.dos.pa.gov/search/business",
+    "http_status": 999,
+    "last_verified_at": "2026-11-13T03:08:13.988490+00:00",
+    "verified": true
+  },
+  "RI": {
+    "checked_at": "2026-11-13T03:08:14.523961+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.sos.ri.gov/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:14.523961+00:00",
+    "verified": true
+  },
+  "SC": {
+    "checked_at": "2026-11-13T03:08:15.591566+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://businessfilings.sc.gov/BusinessFiling/Entity/Search",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:15.591566+00:00",
+    "verified": true
+  },
+  "SD": {
+    "checked_at": "2026-11-13T03:08:15.863711+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://sdsos.gov/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:15.863711+00:00",
+    "verified": true
+  },
+  "TN": {
+    "checked_at": "2026-11-13T03:08:44.539084+00:00",
+    "error": "TimeoutError: The read operation timed out",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "TX": {
+    "checked_at": "2026-11-13T03:08:15.820007+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://www.sos.state.tx.us/corp/sosda/index.shtml",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:15.820007+00:00",
+    "verified": true
+  },
+  "UT": {
+    "checked_at": "2026-11-13T03:08:16.376829+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": true,
+    "final_url": "https://businessregistration.utah.gov/",
+    "http_status": null,
+    "last_verified_at": null,
+    "note": "Answered HTTP 403 in the first pass on 2026-11-12 (bot protection); not re-verified in later passes.",
+    "verified": false
+  },
+  "VA": {
+    "checked_at": "2026-11-13T03:08:45.640200+00:00",
+    "error": "TimeoutError: The read operation timed out",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "VT": {
+    "checked_at": "2026-11-13T03:08:15.392935+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "WA": {
+    "checked_at": "2026-11-13T03:08:16.877983+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://ccfs.sos.wa.gov/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:16.877983+00:00",
+    "verified": true
+  },
+  "WI": {
+    "checked_at": "2026-11-13T03:08:22.257207+00:00",
+    "error": "RemoteDisconnected: Remote end closed connection without response",
+    "ever_verified": false,
+    "final_url": null,
+    "http_status": null,
+    "last_verified_at": null,
+    "verified": false
+  },
+  "WV": {
+    "checked_at": "2026-11-13T03:08:17.399782+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://apps.sos.wv.gov/business/corporations/",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:17.399782+00:00",
+    "verified": true
+  },
+  "WY": {
+    "checked_at": "2026-11-13T03:08:17.974994+00:00",
+    "error": "",
+    "ever_verified": true,
+    "final_url": "https://wyobiz.wyo.gov/Business/FilingSearch.aspx",
+    "http_status": 200,
+    "last_verified_at": "2026-11-13T03:08:17.974994+00:00",
+    "verified": true
+  }
+}

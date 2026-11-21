@@ -297,6 +297,25 @@ class TestScoringLiveState(unittest.TestCase):
         self.assertEqual(badge, "clean")
 
 
+class TestTierNotesWording(unittest.TestCase):
+    """Grok review fix: the dashboard tier note must not market Tier 3 as
+    'LIVE' when every portal returns unknown in practice."""
+
+    def test_state_note_says_attempted_not_live(self):
+        note = pipeline.tier_notes(["AZ"])["state"]
+        self.assertTrue(note.startswith("ATTEMPTED (Playwright)"), note)
+        self.assertFalse(note.startswith("LIVE"), note)
+        self.assertIn("unknown with the reason", note)
+
+    def test_state_note_manual_when_disabled(self):
+        note = pipeline.tier_notes(["AZ"], state_live_attempted=False)["state"]
+        self.assertTrue(note.startswith("MANUAL"), note)
+
+    def test_domain_note_carries_dns_caveat(self):
+        note = pipeline.tier_notes(["AZ"])["domain"]
+        self.assertIn("not a registrar guarantee", note)
+
+
 class TestPipelineStateLive(unittest.TestCase):
     def _mock_tiers(self):
         return (

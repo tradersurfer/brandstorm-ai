@@ -2,6 +2,10 @@
 
 Badges (per the handoff):
 - green  Clean    — .com available, USPTO fully clear, handles clear.
+  When .com availability was inferred from DNS (the keyless default),
+  the Clean reason says so — DNS-clear is not a registrar guarantee.
+  Only a registrar-authoritative method (GoDaddy) gets the unqualified
+  reason.
 - yellow Partial  — .com taken but trademark clear, or a similar live mark,
                     or a taken handle, or a checked tier came back unknown.
 - red    Conflict — an active USPTO mark in the target class matches exactly.
@@ -94,4 +98,11 @@ def score(result: dict) -> tuple[str, str]:
     if reasons:
         return PARTIAL, "; ".join(reasons)
 
-    return CLEAN, "Domain (.com) + trademark + handles clear"
+    # Clean. When .com availability was inferred from DNS (the keyless
+    # default), say so in the reason — DNS-clear is not a registrar
+    # guarantee. Only a registrar-authoritative method (GoDaddy) gets
+    # the unqualified reason. A missing method defaults to the caveat.
+    if domain.get("method") == "godaddy":
+        return CLEAN, "Domain (.com) + trademark + handles clear"
+    return CLEAN, ("Domain (.com) + trademark + handles clear "
+                   "(DNS-clear only — not a registrar guarantee)")

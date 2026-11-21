@@ -10,6 +10,7 @@ import json
 import os
 import sys
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -225,6 +226,58 @@ class TestSocialTier(unittest.TestCase):
                          ["X", "YouTube", "Facebook", "LinkedIn (company)"])
 
 
+class TestSocialStatusMapping(unittest.TestCase):
+    """Status-code -> free/taken/unknown mapping at the transport boundary
+    (mocked http_get / http_get_final) — Grok review fix. Previously only
+    handle variants and the always-unknown display name were tested."""
+
+    def test_404_means_free(self):
+        with mock.patch.object(social, "http_get", return_value=(404, b"", "")):
+            self.assertEqual(social._check_status_platform("https://x.com/desertridge"), "free")
+
+    def test_200_means_taken(self):
+        with mock.patch.object(social, "http_get", return_value=(200, b"<html/>", "")):
+            self.assertEqual(social._check_status_platform("https://x.com/desertridge"), "taken")
+
+    def test_429_403_999_and_transport_error_mean_unknown(self):
+        for resp in ((429, b"", ""), (403, b"", ""), (999, b"", ""), (None, b"", "timeout")):
+            with mock.patch.object(social, "http_get", return_value=resp):
+                self.assertEqual(
+                    social._check_status_platform("https://x.com/desertridge"), "unknown", resp)
+
+    def test_facebook_login_redirect_means_free(self):
+        fake = mock.Mock(return_value=(200, b"", "https://www.facebook.com/login/?next=/desertridge", ""))
+        with mock.patch.object(social, "http_get_final", fake):
+            self.assertEqual(social._check_facebook("desertridge"), "free")
+
+    def test_facebook_stays_on_profile_means_taken(self):
+        fake = mock.Mock(return_value=(200, b"", "https://www.facebook.com/desertridge", ""))
+        with mock.patch.object(social, "http_get_final", fake):
+            self.assertEqual(social._check_facebook("desertridge"), "taken")
+
+    def test_facebook_no_final_url_means_unknown(self):
+        fake = mock.Mock(return_value=(None, b"", None, "timeout"))
+        with mock.patch.object(social, "http_get_final", fake):
+            self.assertEqual(social._check_facebook("desertridge"), "unknown")
+
+    def test_check_social_end_to_end_mocked(self):
+        # Every live platform free, unknown platforms still unknown.
+        def _get(url, timeout=10.0, headers=None):
+            return 404, b"", ""
+
+        def _get_final(url, timeout=10.0, headers=None):
+            return 200, b"", "https://www.facebook.com/login/?next=/desertridge", ""
+
+        with mock.patch.object(social, "http_get", side_effect=_get), \
+                mock.patch.object(social, "http_get_final", side_effect=_get_final):
+            result = social.check_social("desertridge", "Desert Ridge")
+        for platform in ("X", "YouTube", "LinkedIn (company)", "Facebook"):
+            self.assertEqual(set(result["platforms"][platform].values()), {"free"}, platform)
+        for platform in ("Instagram", "TikTok", "LinkedIn (profile)"):
+            self.assertEqual(set(result["platforms"][platform].values()), {"unknown"}, platform)
+        self.assertEqual(result["display_name"]["platforms"]["X"]["status"], "unknown")
+
+
 class TestScoring(unittest.TestCase):
     def _base(self):
         return {
@@ -249,6 +302,29 @@ class TestScoring(unittest.TestCase):
     def test_clean(self):
         badge, _ = scoring.score(self._base())
         self.assertEqual(badge, "clean")
+
+    def test_clean_doh_reason_says_dns_clear_only(self):
+        # Grok review fix: a Clean earned on DNS inference must say so —
+        # DNS-clear is not a registrar guarantee.
+        r = self._base()
+        r["domain"]["method"] = "doh"
+        badge, reason = scoring.score(r)
+        self.assertEqual(badge, "clean")
+        self.assertIn("DNS-clear only", reason)
+
+    def test_clean_godaddy_reason_has_no_dns_caveat(self):
+        # Registrar-authoritative availability gets the unqualified reason.
+        r = self._base()
+        r["domain"]["method"] = "godaddy"
+        badge, reason = scoring.score(r)
+        self.assertEqual(badge, "clean")
+        self.assertNotIn("DNS-clear", reason)
+
+    def test_clean_missing_method_defaults_to_dns_caveat(self):
+        # No method recorded (old results) -> conservative: caveat applies.
+        badge, reason = scoring.score(self._base())
+        self.assertEqual(badge, "clean")
+        self.assertIn("DNS-clear only", reason)
 
     def test_conflict_exact_live(self):
         r = self._base()
@@ -339,18 +415,50 @@ class TestBriefs(unittest.TestCase):
 
 
 class TestDomainParsing(unittest.TestCase):
-    def test_doh_answer_means_taken(self):
-        # _doh_status is exercised end-to-end in the live run; here we check
-        # the JSON contract it parses, using the same shape Google returns.
-        sample = json.loads(
-            '{"Status":0,"Answer":[{"name":"google.com.","type":1,"TTL":300,"data":"142.251.218.238"}]}'
-        )
-        self.assertEqual(sample["Status"], 0)
-        self.assertTrue(sample.get("Answer"))
+    """_doh_status exercised at the transport boundary (mocked http_get),
+    not just the JSON shape — Grok review fix. Previously these tests
+    only asserted that sample JSON had a Status field."""
 
-    def test_doh_nxdomain_means_available(self):
-        sample = json.loads('{"Status":3,"Authority":[{"name":"com.","type":6}]}')
-        self.assertEqual(sample["Status"], 3)
+    def test_answer_means_taken(self):
+        body = (b'{"Status":0,"Answer":[{"name":"desertridge.com.","type":1,'
+                b'"TTL":300,"data":"1.2.3.4"}]}')
+        with mock.patch.object(domain_mod, "http_get", return_value=(200, body, "")):
+            self.assertEqual(domain_mod._doh_status("desertridge.com"), "taken")
+
+    def test_nxdomain_means_available(self):
+        with mock.patch.object(domain_mod, "http_get", return_value=(200, b'{"Status":3}', "")):
+            self.assertEqual(domain_mod._doh_status("desertridge.com"), "available")
+
+    def test_noerror_without_answer_means_available(self):
+        with mock.patch.object(domain_mod, "http_get", return_value=(200, b'{"Status":0}', "")):
+            self.assertEqual(domain_mod._doh_status("desertridge.com"), "available")
+
+    def test_servfail_falls_through_to_next_resolver(self):
+        calls = []
+
+        def _fake(url, timeout=8.0, headers=None):
+            calls.append(url)
+            if "dns.google" in url:
+                return 200, b'{"Status":2}', ""
+            return 200, b'{"Status":3}', ""
+
+        with mock.patch.object(domain_mod, "http_get", side_effect=_fake):
+            self.assertEqual(domain_mod._doh_status("desertridge.com"), "available")
+        self.assertEqual(len(calls), 2)
+        self.assertIn("dns.google", calls[0])
+        self.assertIn("cloudflare", calls[1])
+
+    def test_unparseable_body_falls_through_to_next_resolver(self):
+        fake = mock.Mock(side_effect=[(200, b"not json", ""), (200, b'{"Status":3}', "")])
+        with mock.patch.object(domain_mod, "http_get", fake):
+            self.assertEqual(domain_mod._doh_status("desertridge.com"), "available")
+        self.assertEqual(fake.call_count, 2)
+
+    def test_all_resolvers_failing_is_unknown(self):
+        fake = mock.Mock(side_effect=[(None, b"", "timeout"), (500, b"", "")])
+        with mock.patch.object(domain_mod, "http_get", fake):
+            self.assertEqual(domain_mod._doh_status("desertridge.com"), "unknown")
+        self.assertEqual(fake.call_count, 2)
 
 
 if __name__ == "__main__":

@@ -120,7 +120,7 @@ def tier_notes(states: list[str] | None, state_live_attempted: bool | None = Non
         )
     elif state_live_attempted:
         state_note = (
-            f"LIVE ATTEMPT (Playwright) — live browser checks attempted for {', '.join(states)}; "
+            f"ATTEMPTED (Playwright) — live browser checks attempted for {', '.join(states)}; "
             "portals that block automation return unknown with the reason — see per-candidate "
             "details. Manual check links included per candidate."
         )

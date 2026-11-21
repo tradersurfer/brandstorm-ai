@@ -245,7 +245,7 @@ python3 -m unittest discover -s tests -v   # 117 tests, all passing
 |---|---|---|
 | 1 Domain | LIVE (keyless DoH by default; GoDaddy keyed path implemented, needs a live key to verify) | Google dns.google/resolve + Cloudflare fallback, verified 2026-11-11 |
 | 2 USPTO | LIVE (companion API; TSDR serial-verification path implemented, needs a live key to verify) | tmsearch.uspto.gov companion API, verified 2026-11-11. TSDR has no wordmark-search endpoint — retrieval by serial only |
-| 3 State | ATTEMPTED LIVE (Playwright) — no portal returned found/not-found in the VM | AZ CAPTCHA, CA blocked, FL/NY navigation fails, TX no public search, DC 0×0 input, MD no render, VA cookie gate (2026-11-13). Manual links for the states you asked for; laptop re-test pending |
+| 3 State | ATTEMPTED (Playwright) — no portal returned found/not-found in the VM | AZ CAPTCHA, CA blocked, FL/NY navigation fails, TX no public search, DC 0×0 input, MD no render, VA cookie gate (2026-11-13). Manual links for the states you asked for; laptop re-test pending |
 | 4 Social | PARTIAL | X + YouTube + Facebook + LinkedIn company live via username checks (verified 2026-11-12); IG + TikTok + LinkedIn profile unknown (login wall / HTTP 999); display name unknown on all platforms |
 
 ## Hermes plugin
